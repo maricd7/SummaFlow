@@ -12,9 +12,7 @@ export default function Home() {
     const url = "https://api.openai.com/v1/chat/completions";
     const requestBody = {
       model: "gpt-3.5-turbo",
-      messages: [
-        { role: "user", content: "This is my input text what do you think" },
-      ],
+      messages: [{ role: "user", content: inputText }],
       temperature: 0.7,
     };
 
