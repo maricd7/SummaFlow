@@ -1,8 +1,14 @@
 import React from "react";
 
-function CtaButton() {
+interface ButtonProps {
+  onClick: any;
+}
+function CtaButton({ onClick }: ButtonProps) {
   return (
-    <button className="px-4 py-2 rounded-lg bg-orange-500 text-white hover:bg-orange-600 mt-4">
+    <button
+      onClick={() => onClick()}
+      className="px-4 py-2 rounded-lg bg-orange-500 text-white hover:bg-orange-600 mt-4"
+    >
       Summarize
     </button>
   );
