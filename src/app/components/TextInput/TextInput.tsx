@@ -12,7 +12,7 @@ function TextInput({ setInputText }: TextInputProps) {
   return (
     <textarea
       onChange={handleChange}
-      className="w-96 border-2 border-gray-950 p-4 rounded-lg h-96"
+      className="w-96 border border-gray-400 p-4 rounded-lg h-96"
       placeholder="Enter your text here..."
     ></textarea>
   );

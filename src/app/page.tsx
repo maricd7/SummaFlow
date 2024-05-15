@@ -11,16 +11,19 @@ interface SummType {
 
 export default function Home() {
   const [inputText, setInputText] = useState<string>("");
-  const [results, setResults] = useState<string>(""); // Initialize results with an empty string
+  const [results, setResults] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
   const cohere = new CohereClient({
     token: process.env.NEXT_PUBLIC_COHERE,
   });
 
   const handleSummarize = async () => {
+    setLoading(true);
     const summarize = await cohere.summarize({
       text: inputText,
     });
     if (summarize && summarize.summary) {
+      setLoading(false);
       let name = summarize.summary;
       setResults(name);
     } else {
@@ -40,7 +43,7 @@ export default function Home() {
       </p>
       <div className="flex mt-8 gap-8">
         <TextInput setInputText={setInputText} />
-        <Results results={results} />
+        <Results results={results} loading={loading} />
       </div>
       <CtaButton onClick={() => handleSummarize()} />
     </main>
