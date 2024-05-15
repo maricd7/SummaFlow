@@ -1,42 +1,32 @@
 "use client";
-import Image from "next/image";
 import TextInput from "./components/TextInput/TextInput";
 import CtaButton from "./components/Button/CtaButton";
 import Results from "./components/Results/Results";
 import { useState } from "react";
+import { CohereClient } from "cohere-ai";
+
+interface SummType {
+  name: string;
+}
 
 export default function Home() {
   const [inputText, setInputText] = useState<string>("");
-  async function summarizeText(inputText: string) {
-    const OPENAI_API_KEY = process.env.NEXT_PUBLIC_API_KEY || "";
-    const url = "https://api.openai.com/v1/chat/completions";
-    const requestBody = {
-      model: "gpt-3.5-turbo",
-      messages: [{ role: "user", content: inputText }],
-      temperature: 0.7,
-    };
+  const [results, setResults] = useState<string>(""); // Initialize results with an empty string
+  const cohere = new CohereClient({
+    token: process.env.NEXT_PUBLIC_COHERE,
+  });
 
-    try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${OPENAI_API_KEY}`,
-        },
-        body: JSON.stringify(requestBody),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log(data);
-      } else {
-        console.error("Error:", response.status);
-        // Handle error cases here
-      }
-    } catch (error) {
-      console.error("Error:", error);
+  const handleSummarize = async () => {
+    const summarize = await cohere.summarize({
+      text: inputText,
+    });
+    if (summarize && summarize.summary) {
+      let name = summarize.summary;
+      setResults(name);
+    } else {
+      setResults("Failed to summarize. Please try again.");
     }
-  }
+  };
 
   return (
     <main className="flex min-h-screen flex-col items-center p-24">
@@ -50,9 +40,9 @@ export default function Home() {
       </p>
       <div className="flex mt-8 gap-8">
         <TextInput setInputText={setInputText} />
-        <Results />
+        <Results results={results} />
       </div>
-      <CtaButton onClick={() => summarizeText(inputText)} />
+      <CtaButton onClick={() => handleSummarize()} />
     </main>
   );
 }
